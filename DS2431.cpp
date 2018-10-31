@@ -24,23 +24,31 @@ SOFTWARE.
 
 #include "DS2431.h"
 
-DS2431::DS2431(OneWire &ow, uint8_t serialNumber[8])
+DS2431::DS2431(OneWire &ow)
 : _ow(ow)
-{
-  memcpy(_serialNumber, serialNumber, 8);
+{  
 }
 
-uint8_t DS2431::read(uint16_t address)
+void DS2431::begin(uint8_t serialNumber[8])
+{
+  memcpy(_serialNumber, serialNumber, 8);
+  _init = true;
+}
+
+int DS2431::read(uint16_t address)
 {
   uint8_t res = 0xFF;
 
-  read(address, &res, 1);
-
+  if(!read(address, &res, 1))
+	  return -1;
+  
   return res;
 }
 
-void DS2431::read(uint16_t address, uint8_t *buf, uint16_t len)
+bool DS2431::read(uint16_t address, uint8_t *buf, uint16_t len)
 {
+	if (!_init)
+		return false;
   _ow.reset();
   _ow.select(_serialNumber);
   _ow.write(READ_MEMORY, 1);
@@ -51,6 +59,8 @@ void DS2431::read(uint16_t address, uint8_t *buf, uint16_t len)
     buf[i] = _ow.read();
 
   _ow.depower();
+  
+  return true;
 }
 
 bool DS2431::write(uint16_t address, uint8_t buf[8])

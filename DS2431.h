@@ -31,16 +31,17 @@ class DS2431 {
 public:
   const static uint8_t ONE_WIRE_FAMILY_CODE = 0x2D;
 
-  DS2431(OneWire &ow, // OneWire class
-    uint8_t serialNumber[8]); // family code, 48bit serial number and CRC as returned by OneWire search function
+  DS2431(OneWire &ow); // OneWire class
+	
+  void begin(uint8_t serialNumber[8]); // family code, 48bit serial number and CRC as returned by OneWire search function
 
   /* Single byte read
   */
-  uint8_t read(uint16_t address);
+  int read(uint16_t address);
 
   /* Multiple byte read.
   */
-  void read(uint16_t address, uint8_t *buf, uint16_t len);
+  bool read(uint16_t address, uint8_t *buf, uint16_t len);
 
   /* Full row (8 byte) write. Please note : address must be a multiple of 8.
   Return true if operation was successful.
@@ -51,6 +52,7 @@ public:
 private:
   OneWire &_ow;
   uint8_t _serialNumber[8];
+  bool _init;
 
   const static uint16_t EEPROM_SIZE = 128;
 
