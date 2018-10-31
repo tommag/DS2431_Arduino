@@ -73,7 +73,7 @@ void setup()
   // Write a 8-byte row
   byte newData[] = {1,2,3,4,5,6,7,8};
   word address = 0;
-  if (eeprom.write(address, newData))
+  if (eeprom.write(address, newData, sizeof(newData)))
   {
     Serial.print("Successfully wrote new data @ address ");
     Serial.println(address);
@@ -83,7 +83,6 @@ void setup()
     Serial.print("Failed to write data @ address ");
     Serial.println(address);
   }
-  oneWire.depower(); // Call this after writing to avoid leaving the bus powered.
   Serial.println("");
 
   // Read again memory content
