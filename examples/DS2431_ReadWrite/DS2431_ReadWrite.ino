@@ -32,6 +32,7 @@ SOFTWARE.
 const int ONE_WIRE_PIN = 9; // One Wire pin, change according to your needs. A 4.7k pull up resistor is needed.
 
 OneWire oneWire(ONE_WIRE_PIN);
+DS2431 eeprom(oneWire);
 
 void setup()
 {
@@ -59,7 +60,7 @@ void setup()
   Serial.println("");
 
   // Initialize DS2431 object
-  DS2431 eeprom(oneWire, serialNb);
+  eeprom.begin(serialNb);
 
   // Read all memory content
   byte data[128];
