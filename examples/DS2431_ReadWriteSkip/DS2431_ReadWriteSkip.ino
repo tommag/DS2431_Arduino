@@ -5,7 +5,7 @@ Then a write operation is done and the memory is read again.
 
 MIT License
 
-Copyright (c) 2017 Tom Magnier
+Copyright (c) 2018 Nicolò Veronese
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,29 +38,12 @@ void setup()
 {
   Serial.begin(115200);
   while (!Serial); // wait for Serial to come up on USB boards
-
-  // Search the 1-Wire bus for a connected device.
-  byte serialNb[8];
-  oneWire.target_search(DS2431::ONE_WIRE_FAMILY_CODE);
-  if (!oneWire.search(serialNb))
+  
+  if(!oneWire.reset())
   {
     Serial.println("No DS2431 found on the 1-Wire bus.");
     return;
   }
-
-  // Check serial number CRC
-  if (oneWire.crc8(serialNb, 7) != serialNb[7])
-  {
-    Serial.println("A DS2431 was found but the serial number CRC is invalid.");
-    return;
-  }
-
-  Serial.print("DS2431 found with serial number : ");
-  printBuffer(serialNb, 8);
-  Serial.println("");
-
-  // Initialize DS2431 object
-  eeprom.begin(serialNb);
 
   // Read all memory content
   byte data[128];
